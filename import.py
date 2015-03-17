@@ -1,7 +1,7 @@
 import pymongo
 import sys
 import simplejson as json
-import datetime
+from datetime import datetime
 
 if __name__ == "__main__":
     client = pymongo.MongoClient()
@@ -13,9 +13,9 @@ if __name__ == "__main__":
     events.create_index("targets.login")
     events.create_index("action.objectType")
     for filename in sys.stdin:
-        with open(filename) as f:
+        with open(filename.strip()) as f:
             print "Importing file %s" % f
             blob = json.loads(f.read())
             for h in blob:
                 h['published'] = datetime.strptime(h['published'], "%Y-%m-%dT%H:%M:%S.%fZ")
-            events.insert_many(blob)
+            events.insert(blob)
